@@ -19,7 +19,9 @@ const UserList = () => {
     <div className="container">
       <div className="rowContainer">
         <h1>Users</h1>
-        <Link to="/new">Create New User</Link>
+        <Link to="/new">
+          <button>Create New User</button>
+        </Link>
       </div>
       <table>
         <thead>
