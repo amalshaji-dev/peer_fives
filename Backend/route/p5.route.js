@@ -5,6 +5,8 @@ const P5Controller = require("../controller/p5.controller");
 router.post("/", P5Controller.createP5Transaction);
 
 router.get("/:userId", P5Controller.getAllP5Transactions);
+router.delete("/:rewardId", P5Controller.deleteTransaction);
+
 router.get("/reward/:userId", P5Controller.getAllRewardTransactions);
 
 router.get("/:userId/balance", P5Controller.calculateP5Points);

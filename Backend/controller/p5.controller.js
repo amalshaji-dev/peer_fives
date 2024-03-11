@@ -61,6 +61,28 @@ exports.getAllP5Transactions = async (req, res) => {
   }
 };
 
+exports.deleteTransaction = async (req, res) => {
+  try {
+    const { rewardId } = req.params;
+    const transaction = await RewardHistory.findById(rewardId);
+    if (!transaction) throw new Error("Transaction not found");
+
+    const giver = await User.findById(transaction.giverBy);
+    const receiver = await User.findById(transaction.givenTo);
+
+    giver.p5Balance += Number(point);
+    receiver.rewardBalance -= Number(point);
+
+    await giver.save();
+    await receiver.save();
+
+    const p5Transactions = await RewardHistory.findByIdAndDelete(rewardId);
+    res.json({ message: "P5 Transactions deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getAllRewardTransactions = async (req, res) => {
   try {
     const { userId } = req.params;
