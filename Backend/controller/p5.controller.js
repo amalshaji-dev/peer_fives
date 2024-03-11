@@ -26,12 +26,22 @@ exports.createP5Transaction = async (req, res) => {
     const receiver = await User.findById(receiverId);
     if (!receiver) throw new Error("Receiver user not found");
 
+    if (giver.p5Balance < Number(point)) {
+      throw new Error("Insufficient P5 balance");
+    }
+
+    giver.p5Balance -= Number(point);
+    receiver.rewardBalance += Number(point);
+
     const p5Transaction = await RewardHistory.create({
       givenBy: giverId,
       givenTo: receiverId,
       points: Number(point),
     });
     await p5Transaction.save();
+
+    await giver.save();
+    await receiver.save();
 
     res.status(201).json({ message: "Transaction succesull", p5Transaction });
   } catch (error) {
@@ -66,13 +76,11 @@ exports.getAllRewardTransactions = async (req, res) => {
 exports.calculateRewardPoints = async (req, res) => {
   try {
     const { userId } = req.params;
-    const rewardPoints = await RewardHistory.aggregate([
-      { $match: { givenTo: userId } },
-      { $group: { _id: null, totalPoints: { $sum: "$points" } } },
-    ]);
+    const user = await User.findById(userId);
+
     res.json({
       message: "Reward balance fetched",
-      reward: rewardPoints.length > 0 ? rewardPoints[0].totalPoints : 0,
+      reward: user.rewardBalance,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -82,13 +90,11 @@ exports.calculateRewardPoints = async (req, res) => {
 exports.calculateP5Points = async (req, res) => {
   try {
     const { userId } = req.params;
-    const p5Points = await RewardHistory.aggregate([
-      { $match: { givenBy: userId } },
-      { $group: { _id: null, totalPoints: { $sum: "$points" } } },
-    ]);
+    const user = await User.findById(userId);
+
     res.json({
       message: "P5 balance fetched",
-      p5Points: p5Points.length > 0 ? p5Points[0].totalPoints : 0,
+      p5Points: user.p5Balance,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
