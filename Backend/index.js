@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotEnv = require("dotenv");
+const cors = require("cors");
 
 const userRoutes = require("./route/user.route");
 const p5Routes = require("./route/p5.route");
@@ -8,6 +9,7 @@ const p5Routes = require("./route/p5.route");
 dotEnv.config();
 
 const app = express();
+app.use(cors());
 // hardcoded values for convenience, env example added for values
 const PORT = process.env.PORT || 5000;
 const MONGO_DB_URI =

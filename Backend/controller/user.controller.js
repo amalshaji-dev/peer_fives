@@ -9,6 +9,20 @@ exports.createUser = async (req, res) => {
   }
 };
 
+exports.getUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    res.json({ message: "User fetched", user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 exports.editUser = async (req, res) => {
   try {
     const { id } = req.params;
