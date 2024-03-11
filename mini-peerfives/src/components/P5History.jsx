@@ -44,7 +44,7 @@ const P5History = () => {
             <th>Date-Time</th>
             <th>P5 Given</th>
             <th>User Name</th>
-            <th>Delete</th>
+            {/* <th>Delete</th> */}
           </tr>
         </thead>
         <tbody>
@@ -54,9 +54,9 @@ const P5History = () => {
               <td>{new Date(transaction.datetime).toLocaleString()}</td>
               <td>{transaction.points}</td>
               <td>{transaction.givenTo.name}</td>{" "}
-              <td>
+              {/* <td>
                 <button onClick={() => {}}>Delete</button>
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>
