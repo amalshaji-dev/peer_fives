@@ -67,16 +67,16 @@ exports.deleteTransaction = async (req, res) => {
     const transaction = await RewardHistory.findById(rewardId);
     if (!transaction) throw new Error("Transaction not found");
 
-    const giver = await User.findById(transaction.giverBy);
+    const giver = await User.findById(transaction.givenBy);
     const receiver = await User.findById(transaction.givenTo);
 
-    giver.p5Balance += Number(point);
-    receiver.rewardBalance -= Number(point);
+    giver.p5Balance += Number(transaction.points);
+    receiver.rewardBalance -= Number(transaction.points);
 
     await giver.save();
     await receiver.save();
 
-    const p5Transactions = await RewardHistory.findByIdAndDelete(rewardId);
+    await RewardHistory.findByIdAndDelete(rewardId);
     res.json({ message: "P5 Transactions deleted" });
   } catch (error) {
     res.status(500).json({ error: error.message });
